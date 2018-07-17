@@ -148,6 +148,15 @@ function gotTab(activeTab) {
 
     // Only show the "Add a rule" link if we're on an HTTPS page
     if (/^https:/.test(activeTab.url)) {
+      if(isBlacklisted()){
+        /* this origin is in blacklist already */
+        hide(e("add-blacklist-link"));
+        show(e("remove-blacklist-link"));
+      }else{
+        /* this origin is not in blacklist yet */
+        show(e("add-blacklist-link"));
+        hide(e("remove-blacklist-link"));
+      }
       show(e("add-rule-link"));
     }
   });
@@ -191,6 +200,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
   e("aboutTitle").title = chrome.i18n.getMessage("about_title");
+  e("add-blacklist-link").addEventListener("click", addBlacklist);
+  e("remove-blacklist-link").addEventListener("click", removeBlacklist);
   e("add-rule-link").addEventListener("click", addManualRule);
 });
 
@@ -205,6 +216,23 @@ function hide(elem) {
 
 function show(elem) {
   elem.style.display = "block";
+}
+
+// TODO read config from store?
+function isBlacklisted(){
+  return false;
+}
+
+// TODO just disable this web extension for this origin
+function addBlacklist() {
+  hide(e("add-blacklist-link"));
+  show(e("remove-blacklist-link"));
+}
+
+// TODO cancel action of addBlacklist()
+function removeBlacklist() {
+  show(e("add-blacklist-link"));
+  hide(e("remove-blacklist-link"));
 }
 
 /**
